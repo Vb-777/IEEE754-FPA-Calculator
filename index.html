@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="IEEE 754 floating-point arithmetic calculator: see the sign, exponent and mantissa bits of half, single, double and quadruple precision numbers and add, subtract, multiply or divide them.">
+  <link rel="icon" href="assets/favicon.jpeg">
+  <title>IEEE 754 Floating-Point Arithmetic</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/Fraction.js"></script>
+  <script src="js/IEEE.js"></script>
+  <script src="js/code.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <h1>IEEE 754 Floating-Point Arithmetic</h1>
+    <p>Type a number to see exactly how it is stored, then add, subtract, multiply or divide two numbers and see the correctly rounded result.</p>
+    <div class="precision" role="group" aria-label="Precision">
+      <button type="button" id="sizeButton16">Half · 16-bit</button>
+      <button type="button" id="sizeButton32">Single · 32-bit</button>
+      <button type="button" id="sizeButton64" class="active">Double · 64-bit</button>
+      <button type="button" id="sizeButton128">Quad · 128-bit</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- One card per number. Element IDs (in1, sign1, exp1, mantissa1, …) are used by js/code.js -->
+    <section class="card" aria-labelledby="t1">
+      <h2 id="t1">Number A</h2>
+      <label class="dec">Decimal value
+        <input id="in1" type="text" value="0.0" autocomplete="off" spellcheck="false">
+      </label>
+      <div class="bits">
+        <label class="f-sign">Sign<input id="sign1" type="text" maxlength="1" value="0"></label>
+        <label class="f-exp">Exponent (biased)<input id="exp1" type="text" maxlength="11" value="00000000000"></label>
+        <label class="f-hid">Hidden<input id="hidden1" type="text" maxlength="1" value="0" disabled></label>
+        <label class="f-man">Mantissa (fraction bits)<input id="mantissa1" type="text" maxlength="52" value="0000000000000000000000000000000000000000000000000000"></label>
+      </div>
+      <dl class="decoded">
+        <div><dt>Sign</dt><dd id="signOut1">+</dd></div>
+        <div><dt>Exponent (unbiased)</dt><dd id="expOut1">0</dd></div>
+        <div><dt>Significand</dt><dd id="mantissaOut1">0.0</dd></div>
+      </dl>
+      <dl class="raw">
+        <div><dt>Hex</dt><dd id="hexOut1">0x0000000000000000</dd></div>
+        <div><dt>Binary</dt><dd id="binOut1">0b0000000000000000000000000000000000000000000000000000000000000000</dd></div>
+      </dl>
+    </section>
+
+    <section class="card" aria-labelledby="t2">
+      <h2 id="t2">Number B</h2>
+      <label class="dec">Decimal value
+        <input id="in2" type="text" value="0.0" autocomplete="off" spellcheck="false">
+      </label>
+      <div class="bits">
+        <label class="f-sign">Sign<input id="sign2" type="text" maxlength="1" value="0"></label>
+        <label class="f-exp">Exponent (biased)<input id="exp2" type="text" maxlength="11" value="00000000000"></label>
+        <label class="f-hid">Hidden<input id="hidden2" type="text" maxlength="1" value="0" disabled></label>
+        <label class="f-man">Mantissa (fraction bits)<input id="mantissa2" type="text" maxlength="52" value="0000000000000000000000000000000000000000000000000000"></label>
+      </div>
+      <dl class="decoded">
+        <div><dt>Sign</dt><dd id="signOut2">+</dd></div>
+        <div><dt>Exponent (unbiased)</dt><dd id="expOut2">0</dd></div>
+        <div><dt>Significand</dt><dd id="mantissaOut2">0.0</dd></div>
+      </dl>
+      <dl class="raw">
+        <div><dt>Hex</dt><dd id="hexOut2">0x0000000000000000</dd></div>
+        <div><dt>Binary</dt><dd id="binOut2">0b0000000000000000000000000000000000000000000000000000000000000000</dd></div>
+      </dl>
+    </section>
+
+    <div class="ops" role="group" aria-label="Operation">
+      <button type="button" id="plusButton" title="A + B">+ Add</button>
+      <button type="button" id="minusButton" title="A − B">− Subtract</button>
+      <button type="button" id="timesButton" title="A × B">× Multiply</button>
+      <button type="button" id="divButton" title="A ÷ B">÷ Divide</button>
+    </div>
+
+    <section class="card result" aria-labelledby="t3">
+      <h2 id="t3">Result <span id="opLabel" class="op-label"></span></h2>
+      <label class="dec">Decimal value
+        <input id="in3" type="text" value="0.0" autocomplete="off" spellcheck="false">
+      </label>
+      <div class="bits">
+        <label class="f-sign">Sign<input id="sign3" type="text" maxlength="1" value="0"></label>
+        <label class="f-exp">Exponent (biased)<input id="exp3" type="text" maxlength="11" value="00000000000"></label>
+        <label class="f-hid">Hidden<input id="hidden3" type="text" maxlength="1" value="0" disabled></label>
+        <label class="f-man">Mantissa (fraction bits)<input id="mantissa3" type="text" maxlength="52" value="0000000000000000000000000000000000000000000000000000"></label>
+      </div>
+      <dl class="decoded">
+        <div><dt>Sign</dt><dd id="signOut3">+</dd></div>
+        <div><dt>Exponent (unbiased)</dt><dd id="expOut3">0</dd></div>
+        <div><dt>Significand</dt><dd id="mantissaOut3">0.0</dd></div>
+      </dl>
+      <dl class="raw">
+        <div><dt>Hex</dt><dd id="hexOut3">0x0000000000000000</dd></div>
+        <div><dt>Binary</dt><dd id="binOut3">0b0000000000000000000000000000000000000000000000000000000000000000</dd></div>
+      </dl>
+    </section>
+
+    <section class="card help">
+      <h2>How to read it</h2>
+      <p><b>Value = (−1)<sup>sign</sup> × 1.mantissa × 2<sup>exponent − bias</sup></b>. The bias is 15, 127, 1023 or 16383 for 16, 32, 64 and 128 bits. When the stored exponent is all zeros the number is <i>subnormal</i> and the hidden bit is 0; when it is all ones the value is ±Infinity (mantissa all zeros) or NaN.</p>
+      <p><b>Inputs you can type:</b> decimals (<code>0.1</code>, <code>-2.5e-3</code>), fractions (<code>1/3</code>), hex bit patterns (<code>0x3FB999999999999A</code>), binary patterns (<code>0b0…</code>), <code>Inf</code>, <code>-Inf</code> and <code>NaN</code>. You can also edit the sign, exponent or mantissa bits directly and press Enter. An exponent typed as <code>+3</code> or <code>-2</code> is read as the unbiased value.</p>
+      <p><b>Try:</b>
+        <button type="button" class="link" data-a="0.1" data-b="0.2" data-op="plusButton">0.1 + 0.2</button>
+        <button type="button" class="link" data-a="1" data-b="3" data-op="divButton">1 ÷ 3</button>
+        <button type="button" class="link" data-a="1e308" data-b="10" data-op="timesButton">1e308 × 10 (overflow)</button>
+        <button type="button" class="link" data-a="1" data-b="0" data-op="divButton">1 ÷ 0</button>
+        <button type="button" class="link" data-a="-0" data-b="-5" data-op="plusButton">−0 + −5</button>
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    CS-527 Computer Systems project · IIT Ropar (2023) · Shubham Thawait, Vaibhav Barsaiyan, Prashant Yadav<br>
+    Arithmetic engine adapted from the <a href="https://weitz.de/ieee/" target="_blank" rel="noopener">IEEE 754 Calculator</a> by Prof. Dr. Edmund Weitz
+  </footer>
+
+  <script>
+    // UI extras that sit on top of code.js (which assigns the buttons' onclick handlers)
+    window.addEventListener('load', function () {
+      var sizes = [16, 32, 64, 128];
+      sizes.forEach(function (n) {
+        document.getElementById('sizeButton' + n).addEventListener('click', function () {
+          sizes.forEach(function (m) {
+            document.getElementById('sizeButton' + m).classList.toggle('active', m === n);
+          });
+          document.getElementById('opLabel').textContent = '';
+        });
+      });
+      var labels = { plusButton: 'A + B', minusButton: 'A − B', timesButton: 'A × B', divButton: 'A ÷ B' };
+      Object.keys(labels).forEach(function (id) {
+        document.getElementById(id).addEventListener('click', function () {
+          document.getElementById('opLabel').textContent = '= ' + labels[id];
+        });
+      });
+      document.querySelectorAll('[data-op]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          if (!document.getElementById('sizeButton64').classList.contains('active')) {
+            document.getElementById('sizeButton64').click();
+          }
+          document.getElementById('in1').value = btn.dataset.a;
+          document.getElementById('in2').value = btn.dataset.b;
+          document.getElementById(btn.dataset.op).click();
+          document.querySelector('.result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+    });
+  </script>
+</body>
+</html>
